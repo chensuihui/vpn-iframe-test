@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WeCom VPN iframe 测试</title>
+<style>body{font:16px system-ui,sans-serif;max-width:960px;margin:30px auto;padding:0 16px}input{width:100%;box-sizing:border-box;padding:10px}button{padding:10px 16px;margin:10px 0}iframe{width:100%;height:560px;border:1px solid #aaa;border-radius:8px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f5f5f5;padding:12px}</style>
+</head>
+<body>
+<h1>WeCom VPN iframe 测试</h1>
+<p>入口：<code id="entry"></code></p>
+<label for="target">内部测试页面 URL（HTTPS）</label>
+<input id="target" type="url" placeholder="https://internal.example.com/result.html">
+<button id="load">加载 iframe</button>
+<p id="status" role="status">尚未加载</p>
+<iframe id="frame" title="内部测试页面" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<h3>入口浏览器信息（客户端报告）</h3><pre id="browser"></pre>
+<script>
+const input=document.querySelector('#target'),frame=document.querySelector('#frame'),status=document.querySelector('#status');
+document.querySelector('#entry').textContent=location.href;
+document.querySelector('#browser').textContent=JSON.stringify({userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,online:navigator.onLine,at:new Date().toISOString()},null,2);
+const initial=new URLSearchParams(location.search).get('target');
+if(initial){try{const u=new URL(initial);if(u.protocol==='https:')input.value=u.href}catch{}}
+document.querySelector('#load').onclick=()=>{
+  try{const u=new URL(input.value);if(u.protocol!=='https:')throw Error('目标必须是 HTTPS URL');
+    status.textContent='正在尝试加载 iframe（onload 不代表服务端连通成功）…';
+    frame.src=u.href;
+  }catch(e){status.textContent=e.message;}
+};
+frame.addEventListener('load',()=>{status.textContent='iframe 已触发 load；请检查 iframe 内的服务端 IP 和状态。跨域页面无法由入口直接读取。';});
+</script>
+</body></html>
