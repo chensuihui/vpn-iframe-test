@@ -2,7 +2,7 @@ const express=require('express');
 const path=require('path');
 const app=express();
 // 必须替换为实际 GitHub Pages Origin（不含路径和末尾斜杠）
-const ENTRY_ORIGIN=process.env.ENTRY_ORIGIN || 'https://YOUR_USERNAME.github.io';
+const ENTRY_ORIGIN=process.env.ENTRY_ORIGIN || 'https://chensuihui.github.io/';
 app.disable('x-powered-by');
 app.use((req,res,next)=>{
   res.setHeader('Content-Security-Policy',`frame-ancestors ${ENTRY_ORIGIN}`);
